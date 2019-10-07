@@ -1,4 +1,4 @@
-package com.example.vibrationtest;
+package hannepps.tools.vibrationtest;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,23 +7,20 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.LinearLayout;
 import android.widget.MyLayout;
-import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.ToggleButton;
-import android.widget.VerticalSeekBar;
+
+import com.example.vibrationtest.R;
 
 import static java.lang.Math.abs;
 

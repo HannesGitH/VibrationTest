@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context="hannepps.tools.vibrationtest.MainActivity">
 
     <TextView
         android:id="@+id/textView2"
@@ -149,7 +149,7 @@
         android:focusableInTouchMode="true"
         >
 
-        <android.widget.VerticalSeekBar
+        <hannepps.tools.vibrationtest.VerticalSeekBar
             android:id="@+id/vertical_Seekbar"
             android:layout_width="wrap_content"
             android:layout_height="255dip"
