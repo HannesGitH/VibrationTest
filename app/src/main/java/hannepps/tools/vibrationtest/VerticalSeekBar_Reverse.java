@@ -7,7 +7,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.SeekBar;
 
-public class VerticalSeekBar_Reverse extends SeekBar {
+public class VerticalSeekBar_Reverse extends  SeekBar {
 
     public VerticalSeekBar_Reverse(Context context) {
         super(context);
