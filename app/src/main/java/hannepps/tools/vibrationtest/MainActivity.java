@@ -20,7 +20,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.example.vibrationtest.R;
+import hannepps.tools.vibrationtest.R;
 
 import static java.lang.Math.abs;
 
