@@ -71,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
         hardness_slider.setProgress(50);
         frequency_slider.setProgress(50);
 
+        repeat_switch.setChecked(true);
+
         advanced_toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
