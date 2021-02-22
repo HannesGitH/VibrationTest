@@ -206,6 +206,26 @@ public class MainActivity extends AppCompatActivity {
                         sliderAtX(p.x).setProgress(newProgress);
                     }
                 }
+                void setValueForSlideBetween(Point p1, Point p2){
+
+                    //p1 shall be the one with smaller x
+                    if (p1.x > p2.x){
+                        Point tmp = p1; p1 = p2; p2 = tmp;
+                    }
+
+                    //steigung des dreiecks
+                    int d = (p2.y-p1.y)/(p2.x-p1.x);
+
+                    int currentX = p1.x;
+                    while (currentX < p2.x){
+                        setValueForTouchAt(new Point(
+                                currentX,
+                                (currentX-p1.x)*d + p1.y
+                        ));
+                        currentX += width;
+                    }
+                    /**/
+                }
             }
 
 
