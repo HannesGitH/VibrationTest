@@ -2,9 +2,11 @@ package hannepps.tools.vibrationtest;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
@@ -182,6 +184,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    @SuppressLint("ClickableViewAccessibility")
     void setPrecision(int p){
         for(VerticalSeekBar w: waveform_seekbars)
         {
@@ -199,34 +202,37 @@ public class MainActivity extends AppCompatActivity {
             waveform_container.addView(w);
         }
         waveform_container.setOnTouchListener(new View.OnTouchListener(){
+
+            class SliderManager{
+
+                int width = waveform_container.getWidth() / waveform_container.getChildCount();
+
+                private VerticalSeekBar sliderAtX(int x){
+                    return (VerticalSeekBar) waveform_container.getChildAt(x / width);
+                }
+                void setValueForTouchAt(Point p){
+                    VerticalSeekBar sliderX = sliderAtX(p.x);
+                    if (sliderX != null){
+                        int newProgress = (int) ((1 - p.y / (float) waveform_container.getHeight())*sliderX.getMax()) ;
+                        sliderAtX(p.x).setProgress(newProgress);
+                    }
+                }
+            }
+
+
+
             @Override
             public boolean onTouch(View v, MotionEvent event){
+                SliderManager sliderManager = new SliderManager();
                 if(event.getHistorySize()>0){
                     //got some skipped values
                     for(int j=0;j<event.getHistorySize();j++){
-                        int x=(int)event.getHistoricalX(j);
-                        int width = waveform_container.getWidth() / waveform_container.getChildCount();
-                        int newp = (int) ((waveform_container.getBottom() - event.getHistoricalY(j)) * 260 / (waveform_container.getBottom() - waveform_container.getTop()) - 380);
-                        newp = (newp >= 255) ? 255 : newp;
-                        newp = (newp <= 0) ? 0 : newp;
-                        System.out.println(newp);
-                        try {
-                            ((VerticalSeekBar) waveform_container.getChildAt(x / width)).setProgress(newp);
-                        } catch (Exception e) {
-                        }
+                        Point lastTouch = new Point((int)event.getHistoricalX(j),(int)event.getHistoricalY(j));
+                        sliderManager.setValueForTouchAt(lastTouch);
                     }
                 }
-                    int x = ((int) event.getX());
-                    int width = waveform_container.getWidth() / waveform_container.getChildCount();
-                    int newp = (int) ((waveform_container.getBottom() - event.getY()) * 260 / (waveform_container.getBottom() - waveform_container.getTop()) - 380);
-                    newp = (newp >= 255) ? 255 : newp;
-                    newp = (newp <= 0) ? 0 : newp;
-                    System.out.println(newp);
-                    try {
-                        ((VerticalSeekBar) waveform_container.getChildAt(x / width)).setProgress(newp);
-                    } catch (Exception e) {
-                    }
-
+                Point lastTouch = new Point((int)event.getX(),(int)event.getY());
+                sliderManager.setValueForTouchAt(lastTouch);
 
                 return true;
             }
