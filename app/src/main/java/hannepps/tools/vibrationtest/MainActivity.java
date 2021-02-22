@@ -240,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-
+            Point prevEventLoc;
 
             @Override
             public boolean onTouch(View v, MotionEvent event){
@@ -258,7 +258,13 @@ public class MainActivity extends AppCompatActivity {
 
                 sliderManager.setValueForSlideBetween(prevTouch,lastTouch);
 
-                System.out.println("x");
+                System.out.printf("--%d\n",event.getHistorySize());
+
+                if(event.getAction() == MotionEvent.ACTION_MOVE && prevEventLoc != null){
+                    sliderManager.setValueForSlideBetween(prevEventLoc, lastTouch);
+                }
+                prevEventLoc = lastTouch;
+
                 return true;
             }
         });
