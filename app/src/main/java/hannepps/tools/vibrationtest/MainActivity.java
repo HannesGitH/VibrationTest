@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
         repeat_switch.setChecked(true);
 
+
         advanced_toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -135,6 +136,10 @@ public class MainActivity extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) { }
         });
 
+            /*
+                    precision_slider.setProgress(10);
+                    setPrecision(10);
+            */
 
     }
 
@@ -208,19 +213,24 @@ public class MainActivity extends AppCompatActivity {
                 }
                 void setValueForSlideBetween(Point p1, Point p2){
 
+                    if (p1.x == p2.x){
+                        setValueForTouchAt(p2);
+                        return;
+                    }
+
                     //p1 shall be the one with smaller x
                     if (p1.x > p2.x){
                         Point tmp = p1; p1 = p2; p2 = tmp;
                     }
 
                     //steigung des dreiecks
-                    int d = (p2.y-p1.y)/(p2.x-p1.x);
+                    float d = (float)(p2.y-p1.y)/(float)(p2.x-p1.x);
 
                     int currentX = p1.x;
-                    while (currentX < p2.x){
+                    while (currentX <= p2.x){
                         setValueForTouchAt(new Point(
                                 currentX,
-                                (currentX-p1.x)*d + p1.y
+                                (int)((currentX-p1.x)*d + p1.y)
                         ));
                         currentX += width;
                     }
@@ -233,15 +243,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event){
                 SliderManager sliderManager = new SliderManager();
-                if(event.getHistorySize()>0){
-                    //got some skipped values
-                    for(int j=0;j<event.getHistorySize();j++){
-                        Point lastTouch = new Point((int)event.getHistoricalX(j),(int)event.getHistoricalY(j));
-                        sliderManager.setValueForTouchAt(lastTouch);
-                    }
-                }
+
                 Point lastTouch = new Point((int)event.getX(),(int)event.getY());
-                sliderManager.setValueForTouchAt(lastTouch);
+                Point prevTouch = (event.getHistorySize() == 0)
+                        ? lastTouch
+                        : new Point((int)event.getHistoricalX(0),(int)event.getHistoricalY(0));
+                for(int j=1;j<event.getHistorySize();j++){
+                    Point currTouch = new Point((int)event.getHistoricalX(j-0),(int)event.getHistoricalY(j-0));
+                    sliderManager.setValueForSlideBetween(prevTouch, currTouch);
+                    prevTouch = currTouch;//new Point(currTouch.x,currTouch.y);
+                }
+
+                sliderManager.setValueForSlideBetween(prevTouch,lastTouch);
 
                 return true;
             }
