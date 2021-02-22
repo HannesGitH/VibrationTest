@@ -213,6 +213,8 @@ public class MainActivity extends AppCompatActivity {
                 }
                 void setValueForSlideBetween(Point p1, Point p2){
 
+                    System.out.printf("%d, %d\n",p1.x/width,p2.x/width);
+
                     if (p1.x == p2.x){
                         setValueForTouchAt(p2);
                         return;
@@ -249,13 +251,14 @@ public class MainActivity extends AppCompatActivity {
                         ? lastTouch
                         : new Point((int)event.getHistoricalX(0),(int)event.getHistoricalY(0));
                 for(int j=1;j<event.getHistorySize();j++){
-                    Point currTouch = new Point((int)event.getHistoricalX(j-0),(int)event.getHistoricalY(j-0));
+                    Point currTouch = new Point((int)event.getHistoricalX(j),(int)event.getHistoricalY(j));
                     sliderManager.setValueForSlideBetween(prevTouch, currTouch);
                     prevTouch = currTouch;//new Point(currTouch.x,currTouch.y);
                 }
 
                 sliderManager.setValueForSlideBetween(prevTouch,lastTouch);
 
+                System.out.println("x");
                 return true;
             }
         });
