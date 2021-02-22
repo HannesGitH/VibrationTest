@@ -77,34 +77,21 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 isInAdvancedMode =b;
-                if(isInAdvancedMode){
-                    hardness_slider.setVisibility(View.GONE);
-                    wavelenght_slider.setVisibility(View.GONE);
-                    hardness_textView.setVisibility(View.GONE);
-                    wavelength_textView.setVisibility(View.GONE);
 
-                    waveform_textView.setVisibility(View.VISIBLE);
-                    waveform_container.setVisibility(View.VISIBLE);
-                    precision_slider.setVisibility(View.VISIBLE);
-                    precision_textView.setVisibility(View.VISIBLE);
-                    frequency_slider.setVisibility(View.VISIBLE);
-                    frequency_textView.setVisibility(View.VISIBLE);
-                    //for(VerticalSeekBar w:wfs){w.setVisibility(View.VISIBLE);}
+                int  visibilityIfAdvanced = isInAdvancedMode ? View.VISIBLE : View.GONE;
+                int nvisibilityIfAdvanced = isInAdvancedMode ? View.GONE : View.VISIBLE;
 
-                }else{
-                    hardness_slider.setVisibility(View.VISIBLE);
-                    wavelenght_slider.setVisibility(View.VISIBLE);
-                    hardness_textView.setVisibility(View.VISIBLE);
-                    wavelength_textView.setVisibility(View.VISIBLE);
+                hardness_slider.setVisibility(nvisibilityIfAdvanced);
+                wavelenght_slider.setVisibility(nvisibilityIfAdvanced);
+                hardness_textView.setVisibility(nvisibilityIfAdvanced);
+                wavelength_textView.setVisibility(nvisibilityIfAdvanced);
 
-                    waveform_textView.setVisibility(View.GONE);
-                    waveform_container.setVisibility(View.GONE);
-                    precision_slider.setVisibility(View.GONE);
-                    precision_textView.setVisibility(View.GONE);
-                    frequency_slider.setVisibility(View.GONE);
-                    frequency_textView.setVisibility(View.GONE);
-                    //for(VerticalSeekBar w:wfs){w.setVisibility(View.GONE);}
-                }
+                waveform_textView.setVisibility(visibilityIfAdvanced);
+                waveform_container.setVisibility(visibilityIfAdvanced);
+                precision_slider.setVisibility(visibilityIfAdvanced);
+                precision_textView.setVisibility(visibilityIfAdvanced);
+                frequency_slider.setVisibility(visibilityIfAdvanced);
+                frequency_textView.setVisibility(visibilityIfAdvanced);
 
             }
         });
