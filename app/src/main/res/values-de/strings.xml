@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Vibrations Tester</string>
+    <string name="StartVibratingButtonText">brrrrr</string>
+    <string name="test_it">probiers aus</string>
+    <string name="hardness">Stärke</string>
+    <string name="wavelength">Wellenlänge</string>
+    <string name="vibration_pattern">Vibrationsmuster</string>
+    <string name="mode">Modus</string>
+    <string name="easy">Einfach</string>
+    <string name="frequency">Frequenz</string>
+    <string name="precision">Präzision</string>
+    <string name="StopVibratingButtonText">Stop</string>
+    <string name="advanced">Advanced</string>
+</resources>

@@ -6,8 +6,8 @@
     <string name="hardness">Hardness</string>
     <string name="wavelength">Wavelength</string>
     <string name="vibration_pattern">Vibration Pattern</string>
-    <string name="_1">1</string>
-    <string name="inf">∞</string>
+    <string name="_1" translatable="false">1</string>
+    <string name="inf" translatable="false">∞</string>
     <string name="mode">Mode</string>
     <string name="easy">Easy</string>
     <string name="advanced">Advanced</string>
