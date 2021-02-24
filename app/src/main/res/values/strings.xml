@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">Vibration Tester</string>
+    <string name="StopVibratingButtonText">Stop</string>
+    <string name="StartVibratingButtonText">Have Fun</string>
+    <string name="test_it">Test it</string>
+    <string name="hardness">Hardness</string>
+    <string name="wavelength">Wavelength</string>
+    <string name="vibration_pattern">Vibration Pattern</string>
+    <string name="_1">1</string>
+    <string name="inf">∞</string>
+    <string name="mode">Mode</string>
+    <string name="easy">Easy</string>
+    <string name="advanced">Advanced</string>
+    <string name="frequency">Frequency</string>
+    <string name="precision">Precision</string>
 </resources>

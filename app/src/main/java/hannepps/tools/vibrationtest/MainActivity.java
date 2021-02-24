@@ -1,6 +1,8 @@
 package hannepps.tools.vibrationtest;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -41,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
     Button startstop_button;
     ToggleButton advanced_toggleButton;
-    Switch repeat_switch;
+    SwitchCompat repeat_switch;
     boolean isInAdvancedMode =false;
 
     boolean isCurrentlyVibrating =false;
@@ -53,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         wavelenght_slider = findViewById(R.id.wl);
         hardness_slider = findViewById(R.id.hn);
         startstop_button = findViewById(R.id.button);
-        repeat_switch =findViewById(R.id.switch1);
+        repeat_switch = findViewById(R.id.switch1);
         advanced_toggleButton = findViewById(R.id.toggleButton);
         wavelength_textView = findViewById(R.id.wltext);
         hardness_textView = findViewById(R.id.hntext);
@@ -101,11 +103,11 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(!isCurrentlyVibrating) {
                     vib();
-                    startstop_button.setText("Stop");
+                    startstop_button.setText(R.string.StopVibratingButtonText);
                     isCurrentlyVibrating =true;
                 }else{
                     vibrate(new int[]{1,0},new long[]{10,10},false);
-                    startstop_button.setText("Have Fun");
+                    startstop_button.setText(R.string.StartVibratingButtonText);
                     isCurrentlyVibrating =false;
                 }
             }
@@ -164,15 +166,14 @@ public class MainActivity extends AppCompatActivity {
 
 
     void vibrate(int[] hn,long[] wave,boolean repeat){
-        long[] VIBRATE_PATTERN = wave;
         Vibrator mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         int i=repeat?0:1;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // API 26 and above
-            mVibrator.vibrate(VibrationEffect.createWaveform(VIBRATE_PATTERN,hn, i));
+            mVibrator.vibrate(VibrationEffect.createWaveform(wave,hn, i));
         } else {
             // Below API 26
-            mVibrator.vibrate(VIBRATE_PATTERN, i);
+            mVibrator.vibrate(wave, i);
         }
     }
 
