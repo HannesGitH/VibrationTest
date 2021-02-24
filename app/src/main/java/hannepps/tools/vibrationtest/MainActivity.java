@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
     boolean isCurrentlyVibrating =false;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +82,80 @@ public class MainActivity extends AppCompatActivity {
 
 
         repeat_switch.setChecked(true);
+
+        waveform_container.setOnTouchListener(new View.OnTouchListener(){
+
+            class SliderManager{
+
+                int width = waveform_container.getWidth() / waveform_container.getChildCount();
+
+                private VerticalSeekBar sliderAtX(int x){
+                    return (VerticalSeekBar) waveform_container.getChildAt(x / width);
+                }
+                void setValueForTouchAt(Point p){
+                    VerticalSeekBar sliderX = sliderAtX(p.x);
+                    if (sliderX != null){
+                        int newProgress = (int) ((1 - p.y / (float) waveform_container.getHeight())*sliderX.getMax()) ;
+                        sliderAtX(p.x).setProgress(newProgress);
+                    }
+                }
+                void setValueForSlideBetween(Point p1, Point p2){
+
+                    //System.out.printf("%d, %d\n",p1.x/width,p2.x/width);
+
+                    if (p1.x == p2.x){
+                        setValueForTouchAt(p2);
+                        return;
+                    }
+
+                    //p1 shall be the one with smaller x
+                    if (p1.x > p2.x){
+                        Point tmp = p1; p1 = p2; p2 = tmp;
+                    }
+
+                    //steigung des dreiecks
+                    float d = (float)(p2.y-p1.y)/(float)(p2.x-p1.x);
+
+                    int currentX = p1.x;
+                    while (currentX <= p2.x){
+                        setValueForTouchAt(new Point(
+                                currentX,
+                                (int)((currentX-p1.x)*d + p1.y)
+                        ));
+                        currentX += width;
+                    }
+                    /**/
+                }
+            }
+
+            Point prevEventLoc;
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event){
+                SliderManager sliderManager = new SliderManager();
+
+                Point lastTouch = new Point((int)event.getX(),(int)event.getY());
+                Point prevTouch = (event.getHistorySize() == 0)
+                        ? lastTouch
+                        : new Point((int)event.getHistoricalX(0),(int)event.getHistoricalY(0));
+                for(int j=1;j<event.getHistorySize();j++){
+                    Point currTouch = new Point((int)event.getHistoricalX(j),(int)event.getHistoricalY(j));
+                    sliderManager.setValueForSlideBetween(prevTouch, currTouch);
+                    prevTouch = currTouch;//new Point(currTouch.x,currTouch.y);
+                }
+
+                sliderManager.setValueForSlideBetween(prevTouch,lastTouch);
+
+                //System.out.printf("--%d\n",event.getHistorySize());
+
+                if(event.getAction() == MotionEvent.ACTION_MOVE && prevEventLoc != null){
+                    sliderManager.setValueForSlideBetween(prevEventLoc, lastTouch);
+                }
+                prevEventLoc = lastTouch;
+
+                return true;
+            }
+        });
 
 
         advanced_toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -186,7 +261,6 @@ public class MainActivity extends AppCompatActivity {
 
     private int oldPrecision=1;
 
-    @SuppressLint("ClickableViewAccessibility")
     void setPrecision(int p){
         p=Math.max(1,p);
 
@@ -206,80 +280,6 @@ public class MainActivity extends AppCompatActivity {
                 oldPrecision++;
             }
         }
-
-        waveform_container.setOnTouchListener(new View.OnTouchListener(){
-
-            class SliderManager{
-
-                int width = waveform_container.getWidth() / waveform_container.getChildCount();
-
-                private VerticalSeekBar sliderAtX(int x){
-                    return (VerticalSeekBar) waveform_container.getChildAt(x / width);
-                }
-                void setValueForTouchAt(Point p){
-                    VerticalSeekBar sliderX = sliderAtX(p.x);
-                    if (sliderX != null){
-                        int newProgress = (int) ((1 - p.y / (float) waveform_container.getHeight())*sliderX.getMax()) ;
-                        sliderAtX(p.x).setProgress(newProgress);
-                    }
-                }
-                void setValueForSlideBetween(Point p1, Point p2){
-
-                    //System.out.printf("%d, %d\n",p1.x/width,p2.x/width);
-
-                    if (p1.x == p2.x){
-                        setValueForTouchAt(p2);
-                        return;
-                    }
-
-                    //p1 shall be the one with smaller x
-                    if (p1.x > p2.x){
-                        Point tmp = p1; p1 = p2; p2 = tmp;
-                    }
-
-                    //steigung des dreiecks
-                    float d = (float)(p2.y-p1.y)/(float)(p2.x-p1.x);
-
-                    int currentX = p1.x;
-                    while (currentX <= p2.x){
-                        setValueForTouchAt(new Point(
-                                currentX,
-                                (int)((currentX-p1.x)*d + p1.y)
-                        ));
-                        currentX += width;
-                    }
-                    /**/
-                }
-            }
-
-            Point prevEventLoc;
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event){
-                SliderManager sliderManager = new SliderManager();
-
-                Point lastTouch = new Point((int)event.getX(),(int)event.getY());
-                Point prevTouch = (event.getHistorySize() == 0)
-                        ? lastTouch
-                        : new Point((int)event.getHistoricalX(0),(int)event.getHistoricalY(0));
-                for(int j=1;j<event.getHistorySize();j++){
-                    Point currTouch = new Point((int)event.getHistoricalX(j),(int)event.getHistoricalY(j));
-                    sliderManager.setValueForSlideBetween(prevTouch, currTouch);
-                    prevTouch = currTouch;//new Point(currTouch.x,currTouch.y);
-                }
-
-                sliderManager.setValueForSlideBetween(prevTouch,lastTouch);
-
-                //System.out.printf("--%d\n",event.getHistorySize());
-
-                if(event.getAction() == MotionEvent.ACTION_MOVE && prevEventLoc != null){
-                    sliderManager.setValueForSlideBetween(prevEventLoc, lastTouch);
-                }
-                prevEventLoc = lastTouch;
-
-                return true;
-            }
-        });
-
     }
+
 }
