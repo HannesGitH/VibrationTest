@@ -153,6 +153,10 @@ public class MainActivity extends AppCompatActivity {
                 }
                 prevEventLoc = lastTouch;
 
+                if(isCurrentlyVibrating){
+                    vib();
+                }
+
                 return true;
             }
         });
@@ -197,6 +201,9 @@ public class MainActivity extends AppCompatActivity {
         precision_slider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 setPrecision(progress);
+                if(isCurrentlyVibrating){
+                    vib();
+                }
             }
             public void onStartTrackingTouch(SeekBar seekBar) { }
             public void onStopTrackingTouch(SeekBar seekBar) { }
