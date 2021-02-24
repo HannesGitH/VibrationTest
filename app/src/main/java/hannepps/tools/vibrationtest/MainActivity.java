@@ -11,6 +11,8 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.view.MotionEvent;
@@ -48,6 +50,10 @@ public class MainActivity extends AppCompatActivity {
 
     boolean isCurrentlyVibrating =false;
 
+    Vibrator mVibrator;
+
+    private boolean alreadyset;
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +88,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         repeat_switch.setChecked(true);
+
+        mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         waveform_container.setOnTouchListener(new View.OnTouchListener(){
 
@@ -182,6 +190,18 @@ public class MainActivity extends AppCompatActivity {
                 frequency_slider.setVisibility(visibilityIfAdvanced);
                 frequency_textView.setVisibility(visibilityIfAdvanced);
 
+                //weird workaround
+                if(!alreadyset) {
+                    final Handler handler = new Handler(Looper.getMainLooper());
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            precision_slider.setProgress(15);
+                            setPrecision(15);
+                        }
+                    }, 100);
+                    alreadyset=true;
+                }
             }
         });
 
@@ -189,10 +209,12 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(!isCurrentlyVibrating) {
                     vib();
-                    startstop_button.setText(R.string.StopVibratingButtonText);
-                    isCurrentlyVibrating =true;
+                    if(repeat_switch.isChecked()){
+                        startstop_button.setText(R.string.StopVibratingButtonText);
+                        isCurrentlyVibrating = true;
+                    }
                 }else{
-                    vibrate(new int[]{1,0},new long[]{10,10},false);
+                    mVibrator.cancel();
                     startstop_button.setText(R.string.StartVibratingButtonText);
                     isCurrentlyVibrating =false;
                 }
@@ -227,11 +249,6 @@ public class MainActivity extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) { }
         });
 
-            /*
-                    precision_slider.setProgress(10);
-                    setPrecision(10);
-            */
-
     }
 
     void vib(){
@@ -255,8 +272,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     void vibrate(int[] hn,long[] wave,boolean repeat){
-        Vibrator mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        int i=repeat?0:1;
+        int i=repeat?0:-1;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // API 26 and above
             mVibrator.vibrate(VibrationEffect.createWaveform(wave,hn, i));
@@ -269,6 +285,8 @@ public class MainActivity extends AppCompatActivity {
     private int oldPrecision=1;
 
     void setPrecision(int p){
+
+
         p=Math.max(1,p);
 
         for(VerticalSeekBar w: waveform_seekbars){
