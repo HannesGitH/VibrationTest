@@ -66,12 +66,19 @@ public class MainActivity extends AppCompatActivity {
         frequency_slider = findViewById(R.id.fc);
         frequency_textView = findViewById(R.id.fctext);
 
-        waveform_seekbars =new VerticalSeekBar[1];
-        waveform_seekbars[0]=findViewById(R.id.vertical_Seekbar);
-
         wavelenght_slider.setProgress(75);
         hardness_slider.setProgress(50);
         frequency_slider.setProgress(50);
+
+        waveform_seekbars = new VerticalSeekBar[precision_slider.getMax()+1];
+        for(int i = 0; i< waveform_seekbars.length; i++){
+            VerticalSeekBar w = new VerticalSeekBar(this);
+            w.setMax(255);
+            w.setProgressTintList(ColorStateList.valueOf( getResources().getColor(R.color.colorPrimary)));
+            w.setLayoutParams(new ViewGroup.LayoutParams(10, ViewGroup.LayoutParams.MATCH_PARENT));
+            waveform_seekbars[i]=w;
+        }
+
 
         repeat_switch.setChecked(true);
 
@@ -147,15 +154,15 @@ public class MainActivity extends AppCompatActivity {
 
     void vib(){
         boolean repeat= repeat_switch.isChecked();
-        if(!isInAdvancedMode){
+        if(!isInAdvancedMode || oldPrecision==0){
             int hardness= hardness_slider.getProgress();
-            long wave=(wavelenght_slider.getProgress())^2+1;
+            long wave=(wavelenght_slider.getProgress()^2)+1;
             vibrate(new int[]{hardness,0},new long[]{wave,wave},repeat);
         }else{
-            int len= waveform_seekbars.length;
+            int len = oldPrecision;
             long[]wls=new long[len];
             int[] hns=new int[len];
-            long stepsize=((frequency_slider.getMax()- frequency_slider.getProgress())^3)*10/len+1;
+            long stepsize=((frequency_slider.getMax()- frequency_slider.getProgress())^3)*10/(len+1)+1;
             for(int i=0;i<len;i++){
                 wls[i]=stepsize;
                 hns[i]= waveform_seekbars[i].getProgress();
@@ -177,25 +184,29 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
+    private int oldPrecision=1;
 
     @SuppressLint("ClickableViewAccessibility")
     void setPrecision(int p){
-        for(VerticalSeekBar w: waveform_seekbars)
-        {
-            waveform_container.removeView(w);
-        }
-        waveform_seekbars =new VerticalSeekBar[p];
+        p=Math.max(1,p);
 
-        for(int i=0;i<p;i++){
-            VerticalSeekBar w=new VerticalSeekBar(this);
-            w.setMax(255);
-            w.setLayoutParams(new ViewGroup.LayoutParams(waveform_container.getWidth()/p, ViewGroup.LayoutParams.MATCH_PARENT));
-            w.setProgressTintList(ColorStateList.valueOf(Color.parseColor("#009688")));
-
-            waveform_seekbars[i]=w;
-            waveform_container.addView(w);
+        for(VerticalSeekBar w: waveform_seekbars){
+            ViewGroup.LayoutParams lp = w.getLayoutParams();
+            lp.width = waveform_container.getWidth()/p;
+            w.requestLayout();
         }
+
+        while(p!= oldPrecision-1){
+            VerticalSeekBar w = waveform_seekbars[oldPrecision];
+            if (p<oldPrecision){
+                waveform_container.removeView(w);
+                oldPrecision--;
+            }else{
+                waveform_container.addView(w);
+                oldPrecision++;
+            }
+        }
+
         waveform_container.setOnTouchListener(new View.OnTouchListener(){
 
             class SliderManager{
@@ -214,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 void setValueForSlideBetween(Point p1, Point p2){
 
-                    System.out.printf("%d, %d\n",p1.x/width,p2.x/width);
+                    //System.out.printf("%d, %d\n",p1.x/width,p2.x/width);
 
                     if (p1.x == p2.x){
                         setValueForTouchAt(p2);
@@ -259,7 +270,7 @@ public class MainActivity extends AppCompatActivity {
 
                 sliderManager.setValueForSlideBetween(prevTouch,lastTouch);
 
-                System.out.printf("--%d\n",event.getHistorySize());
+                //System.out.printf("--%d\n",event.getHistorySize());
 
                 if(event.getAction() == MotionEvent.ACTION_MOVE && prevEventLoc != null){
                     sliderManager.setValueForSlideBetween(prevEventLoc, lastTouch);

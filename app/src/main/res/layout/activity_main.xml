@@ -148,15 +148,6 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         >
-
-        <hannepps.tools.vibrationtest.VerticalSeekBar
-            android:id="@+id/vertical_Seekbar"
-            android:layout_width="wrap_content"
-            android:layout_height="255dip"
-            android:max="255"
-            android:progressTint="#009688"
-            app:layout_constraintStart_toStartOf="parent" />
-
         </MyLayout>
 
     <SeekBar
