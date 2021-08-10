@@ -1,6 +1,6 @@
 package hannepps.tools.vibrationtest;
 
-import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
@@ -15,6 +15,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,17 +25,15 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.MyLayout;
 import android.widget.SeekBar;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import static java.lang.Math.abs;
 
 public class MainActivity extends AppCompatActivity {
 
     TextView wavelength_textView;
     TextView hardness_textView;
-    SeekBar wavelenght_slider;
+    SeekBar wavelength_slider;
     SeekBar hardness_slider;
 
     TextView waveform_textView;
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        wavelenght_slider = findViewById(R.id.wl);
+        wavelength_slider = findViewById(R.id.wl);
         hardness_slider = findViewById(R.id.hn);
         startstop_button = findViewById(R.id.button);
         repeat_switch = findViewById(R.id.switch1);
@@ -73,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         frequency_slider = findViewById(R.id.fc);
         frequency_textView = findViewById(R.id.fctext);
 
-        wavelenght_slider.setProgress(75);
+        wavelength_slider.setProgress(75);
         hardness_slider.setProgress(50);
         frequency_slider.setProgress(50);
 
@@ -86,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
             waveform_seekbars[i]=w;
         }
 
+        setActionbarTextColor(getSupportActionBar(), Color.WHITE);
 
         repeat_switch.setChecked(true);
 
@@ -169,7 +171,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         advanced_toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -179,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
                 int nvisibilityIfAdvanced = isInAdvancedMode ? View.GONE : View.VISIBLE;
 
                 hardness_slider.setVisibility(nvisibilityIfAdvanced);
-                wavelenght_slider.setVisibility(nvisibilityIfAdvanced);
+                wavelength_slider.setVisibility(nvisibilityIfAdvanced);
                 hardness_textView.setVisibility(nvisibilityIfAdvanced);
                 wavelength_textView.setVisibility(nvisibilityIfAdvanced);
 
@@ -239,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
             public void onStartTrackingTouch(SeekBar seekBar) { }
             public void onStopTrackingTouch(SeekBar seekBar) { }
         });
-        wavelenght_slider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
+        wavelength_slider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if(isCurrentlyVibrating){
                     vib();
@@ -251,18 +252,27 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void setActionbarTextColor(ActionBar actBar, int color) {
+
+        String title = actBar.getTitle().toString();
+        Spannable spannablerTitle = new SpannableString(title);
+        spannablerTitle.setSpan(new ForegroundColorSpan(color), 0, spannablerTitle.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        actBar.setTitle(spannablerTitle);
+
+    }
+
     void vib(){
         boolean repeat= repeat_switch.isChecked();
         if(!isInAdvancedMode || oldPrecision==0){
             int hardness= hardness_slider.getProgress();
-            long wave=(wavelenght_slider.getProgress()^2)+1;
+            long wave=(wavelength_slider.getProgress()^2)+1;
             vibrate(new int[]{hardness,0},new long[]{wave,wave},repeat);
         }else{
             int len = oldPrecision;
-            long[]wls=new long[len];
-            int[] hns=new int[len];
+            long[]wls=new long[len-1];
+            int[] hns=new int[len-1];
             long stepsize=((frequency_slider.getMax()- frequency_slider.getProgress())^3)*10/(len+1)+1;
-            for(int i=0;i<len;i++){
+            for(int i=0;i<len-1;i++){
                 wls[i]=stepsize;
                 hns[i]= waveform_seekbars[i].getProgress();
             }
@@ -296,7 +306,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         while(p!= oldPrecision-1){
-            VerticalSeekBar w = waveform_seekbars[oldPrecision];
+            VerticalSeekBar w = waveform_seekbars[oldPrecision-1];
             if (p<oldPrecision){
                 waveform_container.removeView(w);
                 oldPrecision--;
