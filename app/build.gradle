@@ -7,7 +7,7 @@ android {
         applicationId "hannepps.tools.vibrationtest"
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode 3
+        versionCode 4
         versionName "1.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
