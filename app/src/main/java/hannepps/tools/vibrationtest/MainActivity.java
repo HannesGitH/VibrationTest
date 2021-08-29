@@ -305,7 +305,7 @@ public class MainActivity extends AppCompatActivity {
             w.requestLayout();
         }
 
-        while(p!= oldPrecision-1){
+        while(p!= oldPrecision){
             VerticalSeekBar w = waveform_seekbars[oldPrecision-1];
             if (p<oldPrecision){
                 waveform_container.removeView(w);
