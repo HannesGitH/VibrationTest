@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         for(int i = 0; i< waveform_seekbars.length; i++){
             VerticalSeekBar w = new VerticalSeekBar(this);
             w.setMax(255);
-            w.setProgressTintList(ColorStateList.valueOf( getResources().getColor(R.color.colorPrimary)));
+            if (Build.VERSION.SDK_INT >= 21) w.setProgressTintList(ColorStateList.valueOf( getResources().getColor(R.color.colorPrimary)));
             w.setLayoutParams(new ViewGroup.LayoutParams(10, ViewGroup.LayoutParams.MATCH_PARENT));
             waveform_seekbars[i]=w;
         }
@@ -311,7 +311,8 @@ public class MainActivity extends AppCompatActivity {
                 waveform_container.removeView(w);
                 oldPrecision--;
             }else{
-                waveform_container.addView(w);
+                try{
+                waveform_container.addView(w);}catch(Exception e){}
                 oldPrecision++;
             }
         }
