@@ -1,9 +1,5 @@
 package hannepps.tools.vibrationtest;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SwitchCompat;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -22,11 +18,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.MyLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -97,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
             class SliderManager{
 
-                int width = waveform_container.getWidth() / waveform_container.getChildCount();
+                final int width = waveform_container.getWidth() / waveform_container.getChildCount();
 
                 private VerticalSeekBar sliderAtX(int x){
                     return (VerticalSeekBar) waveform_container.getChildAt(x / width);
@@ -171,54 +170,46 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        advanced_toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                isInAdvancedMode =b;
+        advanced_toggleButton.setOnCheckedChangeListener((compoundButton, b) -> {
+            isInAdvancedMode =b;
 
-                int  visibilityIfAdvanced = isInAdvancedMode ? View.VISIBLE : View.GONE;
-                int nvisibilityIfAdvanced = isInAdvancedMode ? View.GONE : View.VISIBLE;
+            int  visibilityIfAdvanced = isInAdvancedMode ? View.VISIBLE : View.GONE;
+            int nvisibilityIfAdvanced = isInAdvancedMode ? View.GONE : View.VISIBLE;
 
-                hardness_slider.setVisibility(nvisibilityIfAdvanced);
-                wavelength_slider.setVisibility(nvisibilityIfAdvanced);
-                hardness_textView.setVisibility(nvisibilityIfAdvanced);
-                wavelength_textView.setVisibility(nvisibilityIfAdvanced);
+            hardness_slider.setVisibility(nvisibilityIfAdvanced);
+            wavelength_slider.setVisibility(nvisibilityIfAdvanced);
+            hardness_textView.setVisibility(nvisibilityIfAdvanced);
+            wavelength_textView.setVisibility(nvisibilityIfAdvanced);
 
-                waveform_textView.setVisibility(visibilityIfAdvanced);
-                waveform_container.setVisibility(visibilityIfAdvanced);
-                precision_slider.setVisibility(visibilityIfAdvanced);
-                precision_textView.setVisibility(visibilityIfAdvanced);
-                frequency_slider.setVisibility(visibilityIfAdvanced);
-                frequency_textView.setVisibility(visibilityIfAdvanced);
+            waveform_textView.setVisibility(visibilityIfAdvanced);
+            waveform_container.setVisibility(visibilityIfAdvanced);
+            precision_slider.setVisibility(visibilityIfAdvanced);
+            precision_textView.setVisibility(visibilityIfAdvanced);
+            frequency_slider.setVisibility(visibilityIfAdvanced);
+            frequency_textView.setVisibility(visibilityIfAdvanced);
 
-                //weird workaround
-                if(!alreadyset) {
-                    final Handler handler = new Handler(Looper.getMainLooper());
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            precision_slider.setProgress(15);
-                            setPrecision(15);
-                        }
-                    }, 100);
-                    alreadyset=true;
-                }
+            //weird workaround
+            if(!alreadyset) {
+                final Handler handler = new Handler(Looper.getMainLooper());
+                handler.postDelayed(() -> {
+                    precision_slider.setProgress(15);
+                    setPrecision(15);
+                }, 100);
+                alreadyset=true;
             }
         });
 
-        startstop_button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if(!isCurrentlyVibrating) {
-                    vib();
-                    if(repeat_switch.isChecked()){
-                        startstop_button.setText(R.string.StopVibratingButtonText);
-                        isCurrentlyVibrating = true;
-                    }
-                }else{
-                    mVibrator.cancel();
-                    startstop_button.setText(R.string.StartVibratingButtonText);
-                    isCurrentlyVibrating =false;
+        startstop_button.setOnClickListener(v -> {
+            if(!isCurrentlyVibrating) {
+                vib();
+                if(repeat_switch.isChecked()){
+                    startstop_button.setText(R.string.StopVibratingButtonText);
+                    isCurrentlyVibrating = true;
                 }
+            }else{
+                mVibrator.cancel();
+                startstop_button.setText(R.string.StartVibratingButtonText);
+                isCurrentlyVibrating =false;
             }
         });
         precision_slider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
@@ -271,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
             int len = oldPrecision;
             long[]wls=new long[len-1];
             int[] hns=new int[len-1];
-            long stepsize=((frequency_slider.getMax()- frequency_slider.getProgress())^3)*10/(len+1)+1;
+            long stepsize=((frequency_slider.getMax()- frequency_slider.getProgress())^3)* 10L /(len+1)+1;
             for(int i=0;i<len-1;i++){
                 wls[i]=stepsize;
                 hns[i]= waveform_seekbars[i].getProgress();
@@ -312,7 +303,7 @@ public class MainActivity extends AppCompatActivity {
                 oldPrecision--;
             }else{
                 try{
-                waveform_container.addView(w);}catch(Exception e){}
+                waveform_container.addView(w);}catch(Exception ignored){}
                 oldPrecision++;
             }
         }
