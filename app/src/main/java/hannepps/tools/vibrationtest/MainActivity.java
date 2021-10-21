@@ -1,5 +1,8 @@
 package hannepps.tools.vibrationtest;
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -213,8 +216,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         precision_slider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                setPrecision(progress);
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
+            {
+                setPrecision(max(progress,2));
                 if(isCurrentlyVibrating){
                     vib();
                 }
@@ -254,18 +258,19 @@ public class MainActivity extends AppCompatActivity {
 
     void vib(){
         boolean repeat= repeat_switch.isChecked();
-        if(!isInAdvancedMode || oldPrecision==0){
-            int hardness= hardness_slider.getProgress();
-            long wave=(wavelength_slider.getProgress()^2)+1;
+        if(!isInAdvancedMode || oldPrecision<=1){
+            int hardness = hardness_slider.getProgress();
+            long wave = (wavelength_slider.getProgress()^2)+1;
             vibrate(new int[]{hardness,0},new long[]{wave,wave},repeat);
         }else{
             int len = oldPrecision;
-            long[]wls=new long[len-1];
-            int[] hns=new int[len-1];
-            long stepsize=((frequency_slider.getMax()- frequency_slider.getProgress())^3)* 10L /(len+1)+1;
+            long[] wls = new long[len];
+            int [] hns = new int [len];
+            long stepsize=((frequency_slider.getMax()- frequency_slider.getProgress())^3)* 10L /(len+1)+2;
             for(int i=0;i<len-1;i++){
-                wls[i]=stepsize;
-                hns[i]= waveform_seekbars[i].getProgress();
+                wls[i]= stepsize;
+                int progress_i = waveform_seekbars[i].getProgress();
+                hns[i]= progress_i < 0 || progress_i > 255 ? 0 : progress_i;
             }
             vibrate(hns,wls,repeat);
         }
@@ -288,7 +293,7 @@ public class MainActivity extends AppCompatActivity {
     void setPrecision(int p){
 
 
-        p=Math.max(1,p);
+        p= max(1,p);
 
         for(VerticalSeekBar w: waveform_seekbars){
             ViewGroup.LayoutParams lp = w.getLayoutParams();
@@ -299,11 +304,14 @@ public class MainActivity extends AppCompatActivity {
         while(p!= oldPrecision){
             VerticalSeekBar w = waveform_seekbars[oldPrecision-1];
             if (p<oldPrecision){
-                waveform_container.removeView(w);
+                try{
+                    waveform_container.removeView(w);
+                }catch(Exception ignored){}
                 oldPrecision--;
             }else{
                 try{
-                waveform_container.addView(w);}catch(Exception ignored){}
+                    waveform_container.addView(w);
+                }catch(Exception ignored){}
                 oldPrecision++;
             }
         }
