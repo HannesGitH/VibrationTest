@@ -32,6 +32,7 @@
         app:layout_constraintEnd_toStartOf="@+id/switch1"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <!--
     <SeekBar
         android:id="@+id/hn"
         style="@style/Widget.AppCompat.SeekBar"
@@ -87,6 +88,7 @@
         android:textColor="#E91E63"
         app:layout_constraintBottom_toTopOf="@+id/wl"
         app:layout_constraintStart_toStartOf="parent" />
+        -->
 
     <TextView
         android:id="@+id/wftext"
@@ -113,6 +115,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <!--
     <ToggleButton
         android:id="@+id/toggleButton"
         android:layout_width="0dp"
@@ -129,7 +132,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-    
+    -->
 
     <MyLayout
         android:id="@+id/container"
