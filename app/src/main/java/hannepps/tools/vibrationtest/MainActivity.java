@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity{//Application {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DynamicColors.applyToActivitiesIfAvailable(this.getApplication());
         //DynamicColors.applyToActivitiesIfAvailable(this);
         setContentView(R.layout.activity_main);
         //wavelength_slider = findViewById(R.id.wl);
