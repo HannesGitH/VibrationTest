@@ -27,11 +27,14 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.view.WindowCompat;
 
 import com.google.android.material.color.DynamicColors;
+import com.google.android.material.elevation.SurfaceColors;
 import com.google.android.material.slider.Slider;
 
 
@@ -66,6 +69,12 @@ public class MainActivity extends AppCompatActivity{//Application {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         DynamicColors.applyToActivitiesIfAvailable(this.getApplication());
+        int colorS = SurfaceColors.SURFACE_2.getColor(this);
+        getWindow().setStatusBarColor(colorS);
+        getWindow().setNavigationBarColor(colorS);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            getWindow().setNavigationBarDividerColor(0);
+        }
         //DynamicColors.applyToActivitiesIfAvailable(this);
         setContentView(R.layout.activity_main);
         //wavelength_slider = findViewById(R.id.wl);
