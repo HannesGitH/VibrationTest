@@ -32,6 +32,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
 import com.google.android.material.color.DynamicColors;
+import com.google.android.material.slider.Slider;
 
 
 public class MainActivity extends AppCompatActivity{//Application {
@@ -46,8 +47,8 @@ public class MainActivity extends AppCompatActivity{//Application {
     MyLayout waveform_container;
     TextView frequency_textView;
     TextView precision_textView;
-    SeekBar frequency_slider;
-    SeekBar precision_slider;
+    Slider frequency_slider;
+    Slider precision_slider;
 
     Button startstop_button;
     //ToggleButton advanced_toggleButton;
@@ -82,18 +83,18 @@ public class MainActivity extends AppCompatActivity{//Application {
 
         //wavelength_slider.setProgress(75);
         //hardness_slider.setProgress(50);
-        frequency_slider.setProgress(50);
+        frequency_slider.setValue(50);
 
-        waveform_seekbars = new VerticalSeekBar[precision_slider.getMax()+1];
+        waveform_seekbars = new VerticalSeekBar[(int)(precision_slider.getValueTo()+1)];
         for(int i = 0; i< waveform_seekbars.length; i++){
             VerticalSeekBar w = new VerticalSeekBar(this);
-            w.setMax(255);
-            if (Build.VERSION.SDK_INT >= 21) w.setProgressTintList(ColorStateList.valueOf( getResources().getColor(R.color.colorPrimary)));
+            w.setValueTo(255);
+            //if (Build.VERSION.SDK_INT >= 21) w.setProgressTintList(ColorStateList.valueOf( getResources().getColor(R.color.colorPrimary)));
             w.setLayoutParams(new ViewGroup.LayoutParams(10, ViewGroup.LayoutParams.MATCH_PARENT));
             waveform_seekbars[i]=w;
         }
 
-        setActionbarTextColor(getSupportActionBar(), Color.WHITE);
+        //setActionbarTextColor(getSupportActionBar(), Color.WHITE);
 
         repeat_switch.setChecked(true);
 
@@ -103,16 +104,16 @@ public class MainActivity extends AppCompatActivity{//Application {
 
             class SliderManager{
 
-                final int width = waveform_container.getWidth() / waveform_container.getChildCount();
+                final int width = (waveform_container.getWidth()) / waveform_container.getChildCount();
 
-                private VerticalSeekBar sliderAtX(int x){
-                    return (VerticalSeekBar) waveform_container.getChildAt(x / width);
+                private Slider sliderAtX(int x){
+                    return (Slider) waveform_container.getChildAt((x-50) / width);
                 }
                 void setValueForTouchAt(Point p){
-                    VerticalSeekBar sliderX = sliderAtX(p.x);
+                    Slider sliderX = sliderAtX(p.x);
                     if (sliderX != null){
-                        int newProgress = (int) ((1 - p.y / (float) waveform_container.getHeight())*sliderX.getMax()) ;
-                        sliderAtX(p.x).setProgress(newProgress);
+                        float newProgress =  ((1 - p.y / (float) waveform_container.getHeight())*sliderX.getValueTo()) ;
+                        sliderAtX(p.x).setValue(min(max(newProgress,0),sliderX.getValueTo()));
                     }
                 }
                 void setValueForSlideBetween(Point p1, Point p2){
@@ -224,26 +225,18 @@ public class MainActivity extends AppCompatActivity{//Application {
                 }
             }
         });
-        precision_slider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
-            {
-                setPrecision(max(progress,2));
+        precision_slider.addOnChangeListener((slider, value, fromUser) -> {
+            setPrecision(max((int)value,2));
+            if(isCurrentlyVibrating){
+                vib();
+            }
+        });
+        frequency_slider.addOnChangeListener((slider, value, fromUser) -> {
                 if(isCurrentlyVibrating){
                     vib();
                 }
             }
-            public void onStartTrackingTouch(SeekBar seekBar) { }
-            public void onStopTrackingTouch(SeekBar seekBar) { }
-        });
-        frequency_slider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if(isCurrentlyVibrating){
-                    vib();
-                }
-            }
-            public void onStartTrackingTouch(SeekBar seekBar) { }
-            public void onStopTrackingTouch(SeekBar seekBar) { }
-        });
+        );
         /*wavelength_slider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if(isCurrentlyVibrating){
@@ -275,10 +268,10 @@ public class MainActivity extends AppCompatActivity{//Application {
             int len = oldPrecision;
             long[] wls = new long[len];
             int [] hns = new int [len];
-            long stepsize=((frequency_slider.getMax()- frequency_slider.getProgress())^3)* 10L /(len+1)+2;
+            long stepsize=((int)(frequency_slider.getValueTo()- frequency_slider.getValue())^3)* 10L /(len+1)+2;
             for(int i=0;i<len-1;i++){
                 wls[i]= stepsize;
-                int progress_i = waveform_seekbars[i].getProgress();
+                int progress_i = (int) waveform_seekbars[i].getValue();
                 hns[i]= progress_i < 0 || progress_i > 255 ? 0 : progress_i;
             }
             vibrate(hns,wls,repeat);
@@ -304,9 +297,15 @@ public class MainActivity extends AppCompatActivity{//Application {
 
         p= max(1,p);
 
+        int i = 0;
         for(VerticalSeekBar w: waveform_seekbars){
             ViewGroup.LayoutParams lp = w.getLayoutParams();
-            lp.width = waveform_container.getWidth()/p;
+            float width = (waveform_container.getWidth()) / ((float)waveform_container.getChildCount()+0.00002f);
+            //lp.height = 300;
+            //float width = (waveform_container.getWidth()-100)/((float)p);
+
+            w.setX((i+++0.5f)*width);
+            //lp.width = 300;
             w.requestLayout();
         }
 

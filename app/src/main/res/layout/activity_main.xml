@@ -18,127 +18,52 @@
 
     <Button
         android:id="@+id/button"
-        style="@android:style/Widget.Material.Button.Small"
+
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="20dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="20dp"
-        android:shadowColor="@color/colorButton"
+
         android:text="@string/test_it"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textColor="#009688"
+
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/switch1"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <!--
-    <SeekBar
-        android:id="@+id/hn"
-        style="@style/Widget.AppCompat.SeekBar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="30dp"
-        android:indeterminate="false"
-        android:max="100"
-        android:progressTint="#009688"
-        android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/hntext"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="18dp"
-        android:layout_marginBottom="10dp"
-        android:text="@string/hardness"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textColor="#E91E63"
-        app:layout_constraintBottom_toTopOf="@+id/hn"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <SeekBar
-        android:id="@+id/wl"
-        style="@style/Widget.AppCompat.SeekBar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="104dp"
-        android:indeterminate="false"
-        android:max="150"
-        android:progressTint="#009688"
-        android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/wltext"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="18dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/wavelength"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textColor="#E91E63"
-        app:layout_constraintBottom_toTopOf="@+id/wl"
-        app:layout_constraintStart_toStartOf="parent" />
-        -->
 
     <TextView
         android:id="@+id/wftext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="18dp"
+        android:layout_marginStart="20dp"
         android:layout_marginBottom="2dp"
         android:text="@string/vibration_pattern"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textColor="#E91E63"
-        android:visibility="gone"
+
+
         app:layout_constraintBottom_toTopOf="@+id/container"
         app:layout_constraintStart_toStartOf="parent" />
+
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/switch1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="28dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
         android:checked="true"
         android:textOff="@string/_1"
         android:textOn="@string/inf"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!--
-    <ToggleButton
-        android:id="@+id/toggleButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="8dp"
-        android:elevation="5dp"
-        android:text="@string/mode"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textColor="#009688"
-        android:textOff="@string/easy"
-        android:textOn="@string/advanced"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-    -->
-
     <MyLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="255dip"
-        app:layout_constraintBottom_toTopOf="@+id/wftext"
+        app:layout_constraintBottom_toTopOf="@+id/switch1"
         android:layout_marginStart="18dp"
         android:layout_marginEnd="18dp"
         android:layout_marginBottom="10dp"
@@ -148,16 +73,17 @@
         >
         </MyLayout>
 
-    <SeekBar
+    <com.google.android.material.slider.Slider
         android:id="@+id/fc"
-        style="@style/Widget.AppCompat.SeekBar"
+
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginBottom="30dp"
         android:indeterminate="false"
-        android:max="100"
-        android:progressTint="#009688"
+        android:valueTo="100"
+        app:labelBehavior="gone"
+
 
         app:layout_constraintBottom_toTopOf="@+id/pctext"
         app:layout_constraintEnd_toEndOf="parent"
@@ -169,23 +95,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="18dp"
-        android:layout_marginBottom="10dp"
         android:text="@string/frequency"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textColor="#E91E63"
-        app:layout_constraintBottom_toTopOf="@+id/fc"
-        app:layout_constraintStart_toStartOf="parent" />
 
-    <SeekBar
+        app:layout_constraintBottom_toTopOf="@+id/fc"
+        app:layout_constraintStart_toStartOf="parent"
+         />
+
+    <com.google.android.material.slider.Slider
         android:id="@+id/pc"
-        style="@style/Widget.AppCompat.SeekBar"
+
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginBottom="30dp"
         android:indeterminate="false"
-        android:max="100"
-        android:progressTint="#009688"
+        android:valueTo="100"
+        app:labelBehavior="gone"
+
 
         app:layout_constraintBottom_toTopOf="@+id/wftext"
         app:layout_constraintEnd_toEndOf="parent"
@@ -197,11 +123,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="18dp"
-        android:layout_marginBottom="10dp"
 
         android:text="@string/precision"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textColor="#E91E63"
+
+
         app:layout_constraintBottom_toTopOf="@+id/pc"
         app:layout_constraintStart_toStartOf="parent" />
 

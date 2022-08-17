@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.SeekBar;
 
-public class VerticalSeekBar extends androidx.appcompat.widget.AppCompatSeekBar {
+public class VerticalSeekBar extends com.google.android.material.slider.Slider {
 
     public VerticalSeekBar(Context context) {
         super(context);
@@ -38,8 +38,8 @@ public class VerticalSeekBar extends androidx.appcompat.widget.AppCompatSeekBar 
     }
 
     @Override
-    public void setProgress(int i){
-        super.setProgress(i);
+    public void setValue(float i){
+        super.setValue(i);
         onSizeChanged(getWidth(), getHeight(), 0, 0);
     }
 
@@ -53,9 +53,9 @@ public class VerticalSeekBar extends androidx.appcompat.widget.AppCompatSeekBar 
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_MOVE:
             case MotionEvent.ACTION_UP:
-            	int i=0;
-            	i=getMax() - (int) (getMax() * event.getY() / getHeight());
-                setProgress(i);
+            	float i=0;
+            	i=getValueTo() - (int) (getValueTo() * event.getY() / getHeight());
+                setValue(i);
                 //Log.i("Progress",getProgress()+"");
                 //onSizeChanged(getWidth(), getHeight(), 0, 0);
 
